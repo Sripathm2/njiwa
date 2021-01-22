@@ -50,7 +50,7 @@ certain resources needed to run Njiwa. Take note of the Wildfly/JBOSS home direc
 <security-domain name="njiwa" cache-type="default">
    <authorization>
      <policy-module code="PermitAll" flag="optional"/>
-       </authorization>
+    </authorization>
 </security-domain>
 ```
 
@@ -59,6 +59,36 @@ certain resources needed to run Njiwa. Take note of the Wildfly/JBOSS home direc
 
  You may deploy the WAR file in the usual JBOSS/Wildfly manner (usually a matter of copying it to
  *${WILDFLYHOME}/standalone/deployments*. 
+
+
+## Detailed setup.
+
+1. First have java jdk > 8, gradle, postgresql, redis installed.
+
+2. get the wildfly and set it up - https://websiteforstudents.com/how-to-install-wildfly-on-ubuntu-20-04-18-04/ note the version to be 21 and stop after the "sh /opt/wildfly/bin/jboss-cli.sh --connect" command. 
+
+3. get a postgres sql JDBC jar file.  Make a new user and database. Use the following swebsite to deploy the JAR file to wildfly - https://www.learn-it-with-examples.com/middleware/wildfly/common-tasks/install-jdbc-driver-in-wildfly-for-postgresql.html
+
+4. If you follow the step 2 without changing the installation path  then you will have wildfly in /opt/wildfl. Go to /opt/wildfly/standalone/configuration and open the standalone.xml and add:
+```
+<security-domain name="njiwa" cache-type="default">
+   <authorization>
+     <policy-module code="PermitAll" flag="optional"/>
+    </authorization>
+</security-domain>
+```
+After the security domain named "other". Repeat for /opt/wildfly/domain/configuration/domain.xml
+
+6. Open the wildfly console(localhost:9990) and go to configurations-> add datascourse and add the database created in step 3 and JNDI name must be *java:/njiwa*.
+
+7. Go to the repo location and execute the following code - 
+```
+cd build
+gradle init
+gradle war
+```
+
+8. Deploy the War file in "{RepoFolder}/build/build/libs".
 
 ## Getting Help, Helping Out, etc.
 
